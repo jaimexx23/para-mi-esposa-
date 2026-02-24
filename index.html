@@ -309,8 +309,21 @@
     }
 
     @media (max-width: 900px) {
-      .timeline-photos {
-        display: none;
+      .timeline-photo {
+        width: clamp(75px, 18vw, 95px);
+        opacity: 0.65;
+      }
+
+      .timeline-photo.visible {
+        opacity: 0.55;
+      }
+
+      .timeline-photo.side-left {
+        left: -40px;
+      }
+
+      .timeline-photo.side-right {
+        right: -40px;
       }
 
       .timeline::before,
@@ -441,14 +454,14 @@
     }
 
     function buildTimelinePhotos() {
-      if (!timelinePhotos || !timeline || window.innerWidth <= 900) {
-        if (timelinePhotos) timelinePhotos.innerHTML = '';
+      if (!timelinePhotos || !timeline) {
         return;
       }
 
       timelinePhotos.innerHTML = '';
       const selected = shuffle(imagePool);
-      const imageCount = Math.min(selected.length, 6);
+      const isMobile = window.innerWidth <= 900;
+      const imageCount = Math.min(selected.length, isMobile ? 4 : 6);
 
       for (let i = 0; i < imageCount; i += 1) {
         const img = document.createElement('img');
@@ -457,7 +470,7 @@
         img.alt = 'Recuerdo especial';
 
         const topPercent = 8 + (i * (80 / Math.max(1, imageCount - 1))) + (Math.random() * 8 - 4);
-        const rotation = Math.random() * 8 - 4;
+        const rotation = isMobile ? Math.random() * 4 - 2 : Math.random() * 8 - 4;
         img.style.top = `${Math.max(3, Math.min(89, topPercent))}%`;
         img.style.setProperty('--tilt', `${rotation}deg`);
         img.style.transitionDelay = `${0.06 * i}s`;
